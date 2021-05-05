@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:universal_html/html.dart' as html;
+import 'dart:html' as html;
+import 'dart:convert';
 
 void main() {
   runApp(
     MaterialApp(
-      home: PdfDemo(),
+      home: JsonFileDownload(),
     ),
   );
 }
 
-class PdfDemo extends StatelessWidget {
+class JsonFileDownload extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final pdf = pw.Document();
-    pdf.addPage(pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Text("Hello World"),
-          );
-        }));
-    final bytes = pdf.save();
-    final blob = html.Blob([bytes], 'application/pdf');
+    var data = {
+      'hoge': 'hoge',
+    };
+    var jsonString = json.encode(data);
+    // var bytes = jsonString.codeUnits;
+    final blob = html.Blob([jsonString], 'application/json');
 
     return Scaffold(
       appBar: AppBar(),
@@ -46,7 +41,7 @@ class PdfDemo extends StatelessWidget {
                     html.document.createElement('a') as html.AnchorElement
                       ..href = url
                       ..style.display = 'none'
-                      ..download = 'some_name.pdf';
+                      ..download = 'hoge.json';
                 html.document.body.children.add(anchor);
                 anchor.click();
                 html.document.body.children.remove(anchor);
